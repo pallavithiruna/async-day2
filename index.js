@@ -1,41 +1,42 @@
-const url = "https://restcountries.com/v3.1/all";
-const apiKey = "11a1a70f88f93d84c02889beb29c768e"; 
+var con=document.createElement("div");
+con.setAttribute("class","container");
+var row= document.createElement("div");
+row.setAttribute("class","row");
+     
+var title=document.createElement('h1');
+title.setAttribute("id","title");
+title.setAttribute("class","text-center");
+title.innerHTML="This is Rest countries task"
 
-const fetchWeather = (lat, lon) => {
-    const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`;
-    return fetch(weatherUrl).then((response) => response.json());
-};
 
-const countryContainer = document.getElementById("countryContainer");
 
-const handleWeatherButtonClick = (lat, lon, weatherContainer) => {
-    fetchWeather(lat, lon)
-        .then((weatherInfo) => {
-            weatherContainer.innerHTML = `
-                <p>Temperature: ${weatherInfo.main.temp} &#8451;</p>
-                <p>Weather: ${weatherInfo.weather[0].description}</p>
-            `;
-        })
-        .catch((error) => {
-            console.error("Error fetching weather data", error);
-            weatherContainer.innerHTML = "<p>Error fetching weather data</p>";
-        });
-};
-
-const result = fetch(url);
-result.then((data) => data.json()).then((ele) => {
-    for (let i = 0; i < ele.length; i++) {
-        const card = document.createElement("div");
-        card.className = "col";
-        card.innerHTML = `
-            <div class="card">
-                <div class="card-header">${ele[i].name.common}</div>
-                <img src="${ele[i].flags.png}" class="card-img-top" style="height: 150px;">
-                
-                <button class="btn btn-primary" onclick="handleWeatherButtonClick(${ele[i].latlng[0]}, ${ele[i].latlng[1]}, this.nextElementSibling)">Click for Weather</button>
-                <div class="weather-container"></div>
-            </div>
-        `;
-        countryContainer.appendChild(card);
-    }
-});
+var res=fetch("https://restcountries.com/v2/all")
+.then((data)=> data.json())
+.then((data1)=>print(data1));
+function print(data1)
+{
+     for(var i=0;i<data1.length;i++)
+    {        
+        row.innerHTML +=`<div class="col-md-4  col-sm-6 col-lg-4 col-xl-4">
+        <div class="card h-100 border-info mb-3" style="max-width: 18rem;">
+        <div class="card-header">Country Name:${data1[i].name}</div>
+        <img src=${data1[i].flag} class="card-img-top" alt=${data1[i].name} width=100px height=100px>
+        <div class="card-body">
+        <h5 class="card-title">Capital:${data1[i].capital}</h5>
+        <h5 class="card-title">Countrycode:${data1[i].alpha3Code}</h5>
+        <div class="card-text">Region:${data1[i].region}</div>
+        <div class="card-text">Native Name:${data1[i].nativeName}</div>
+        <div class="card-text">Population:${data1[i].population}</div>
+        <button onclick="foo(${data1[i].latlng[0]},${data1[i].latlng[1]})">Click here for weather</button>
+        </div>
+      </div>`
+      } 
+}
+async function foo(lat,lon)
+{
+let res=await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=17dc4d98276652dc2112615c60f4f346`);
+let res1= await res.json();
+alert(`Temp:${res1.main.temp}`);
+}
+con.append(title,row);
+document.body.append(con);
